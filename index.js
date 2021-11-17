@@ -22,6 +22,8 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
+
+    // Database Collections
     const database = client.db("glassGhor");
     const latestCollections = database.collection("latestCollection");
     const glassesCollections = database.collection("glassesCollection");
@@ -32,11 +34,28 @@ async function run() {
       const latestCollection = await cursor.toArray();
       res.send(latestCollection);
     });
+
     // Get All Glasses
     app.get("/glassesCollection", async (req, res) => {
       const cursor = glassesCollections.find({});
       const glassesCollection = await cursor.toArray();
       res.send(glassesCollection);
+    });
+
+    // Get Single Product for order [latestCollections]
+    app.get("/singleProduct/:id", async (req, res) => {
+      const result = await latestCollections
+        .find({ _id: ObjectId(req.params.id) })
+        .toArray();
+      res.send(result[0]);
+    });
+
+    // Get Single Product for order [glassesCollections]
+    app.get("/singleProduct/:id", async (req, res) => {
+      const result = await glassesCollections
+        .find({ _id: ObjectId(req.params.id) })
+        .toArray();
+      res.send(result[0]);
     });
   } finally {
     //   await client.close();
