@@ -22,11 +22,15 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
+    const database = client.db("glassGhor");
 
     // Database Collections
-    const database = client.db("glassGhor");
     const latestCollections = database.collection("latestCollection");
     const glassesCollections = database.collection("glassesCollection");
+    const usersCollection = database.collection("users");
+    const ordersCollection = database.collection("orders");
+    const messagesCollection = database.collection("messages");
+    const reviewsCollection = database.collection("reviews");
 
     // Get All latestGlasses for home page
     app.get("/latestCollection", async (req, res) => {
@@ -56,6 +60,14 @@ async function run() {
         .find({ _id: ObjectId(req.params.id) })
         .toArray();
       res.send(result[0]);
+    });
+
+    // Post the Order
+    app.post("/orders", async (req, res) => {
+      const order = req.body;
+      const result = await ordersCollection.insertOne(order);
+      console.log(order);
+      res.json(result);
     });
   } finally {
     //   await client.close();
