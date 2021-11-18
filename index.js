@@ -69,6 +69,21 @@ async function run() {
       console.log(order);
       res.json(result);
     });
+
+    // Get the All Orders
+    app.get("/orders", async (req, res) => {
+      const cursor = ordersCollection.find({});
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
+
+    // Delete  Orders
+    app.delete("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await ordersCollection.deleteOne(query);
+      res.send(orders);
+    });
   } finally {
     //   await client.close();
   }
