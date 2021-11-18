@@ -27,10 +27,10 @@ async function run() {
     // Database Collections
     const latestCollections = database.collection("latestCollection");
     const glassesCollections = database.collection("glassesCollection");
-    const usersCollection = database.collection("users");
     const ordersCollection = database.collection("orders");
-    const messagesCollection = database.collection("messages");
     const reviewsCollection = database.collection("reviews");
+    const usersCollection = database.collection("users");
+    const messagesCollection = database.collection("messages");
 
     // Get All latestGlasses for home page
     app.get("/latestCollection", async (req, res) => {
@@ -83,6 +83,19 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const result = await ordersCollection.deleteOne(query);
       res.send(orders);
+    });
+
+    // Post Review
+    app.post("/addReview", async (req, res) => {
+      const result = await reviewsCollection.insertOne(req.body);
+      res.send(result);
+    });
+
+    // Get  All Review
+    app.get("/addReview", async (req, res) => {
+      const cursor = reviewsCollection.find({});
+      const reviews = await cursor.toArray();
+      res.send(reviews);
     });
   } finally {
     //   await client.close();
